@@ -1,17 +1,20 @@
 import { MongoClient } from 'mongodb'
 
 const connectionString = process.env.ATLAS_URI || ''
-const client = new MongoClient(connectionString)
+const client = new MongoClient(connectionString, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
 
-async function connect() {
-  let connection
-  try {
-    connection = await client.connect()
-  } finally {
-    await client.close()
-  }
-  let db = connection.db('diet_db')
-  return db
+let connection
+
+try {
+  connection = await client.connect()
+  console.dir('connection established')
+} catch (error) {
+  console.error(error)
 }
-connect().catch(console.dir)
+
+let db = connection.db('diet_db')
+
 export default db
