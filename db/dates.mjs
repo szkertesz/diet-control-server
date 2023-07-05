@@ -79,7 +79,6 @@ const deleteOneDate = dateId => {
         message: `Can't find date with the id '${dateId}'`,
       }
     }
-    const collection = db.collection('dates')
     let result = dateCollection.deleteOne(query)
     return result
   } catch (error) {
