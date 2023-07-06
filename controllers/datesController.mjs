@@ -1,4 +1,7 @@
+import { ObjectId } from 'mongodb'
 import datesService from '../services/datesService.mjs'
+import db from '../db/connect.mjs'
+const foodCollection = db.collection('food')
 
 const getAllDates = async (req, res) => {
   try {
@@ -11,13 +14,17 @@ const getAllDates = async (req, res) => {
   }
 }
 
-const getOneDate = (req, res) => {
+const getOneDate = async (req, res) => {
   try {
     const {
       params: { dateId },
     } = req
     if (!dateId) return
-    const date = datesService.getOneDate(dateId)
+    const date = await datesService.getOneDate(dateId)
+    const foodItems = await foodCollection
+      .find({ _id: { $in: date.foodItems } })
+      .toArray()
+    date.foodItems = foodItems
     res.send({ status: 'OK', data: date })
   } catch (error) {
     res
@@ -38,10 +45,11 @@ const createNewDate = async (req, res) => {
     })
     return
   }
+
   const newDate = {
     date: body.date,
     meal: body.meal,
-    foodItems: body.foodItems,
+    foodItems: body.foodItems.map(item => new ObjectId(item)),
     stat: body.stat,
   }
   try {
@@ -54,7 +62,7 @@ const createNewDate = async (req, res) => {
   }
 }
 
-const updateOneDate = (req, res) => {
+const updateOneDate = async (req, res) => {
   const {
     body,
     params: { dateId },
@@ -67,7 +75,7 @@ const updateOneDate = (req, res) => {
     return
   }
   try {
-    const updatedDate = datesService.updateOneDate(dateId, body)
+    const updatedDate = await datesService.updateOneDate(dateId, body)
     res.send({ status: 'OK', data: updatedDate })
   } catch (error) {
     res
