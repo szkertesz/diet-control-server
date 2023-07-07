@@ -18,18 +18,27 @@ const getOneFoodItem = foodId => {
   }
 }
 
-const createNewFoodItem = dateData => {
+const createNewFoodItem = foodItemData => {
   try {
-    const newFoodItem = Food.createNewFoodItem(dateData)
+    const newFoodItem = Food.createNewFoodItem(foodItemData)
     return newFoodItem
   } catch (error) {
     throw error
   }
 }
 
-const updateOneFoodItem = (foodId, dateDataChanges) => {
+const createNewFoodItems = foodData => {
   try {
-    const updatedFoodItem = Food.updateOneFoodItem(foodId, dateDataChanges)
+    const newFoodItems = Food.createNewFoodItems(foodData)
+    return newFoodItems
+  } catch (error) {
+    throw error
+  }
+}
+
+const updateOneFoodItem = (foodId, foodItemDataChanges) => {
+  try {
+    const updatedFoodItem = Food.updateOneFoodItem(foodId, foodItemDataChanges)
     return updatedFoodItem
   } catch (error) {
     throw error
@@ -48,6 +57,7 @@ export default {
   getAllFoodItems,
   getOneFoodItem,
   createNewFoodItem,
+  createNewFoodItems,
   updateOneFoodItem,
   deleteOneFoodItem,
 }

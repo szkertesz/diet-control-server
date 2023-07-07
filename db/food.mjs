@@ -43,6 +43,21 @@ const createNewFoodItem = newFoodItemData => {
   }
 }
 
+const createNewFoodItems = newFoodData => {
+  try {
+    // this option prevents additional documents from being inserted if one fails
+    const options = { ordered: true }
+    let result = foodCollection.insertMany(newFoodData, options)
+    console.log(`${result.insertedCount} documents were inserted`)
+    return result
+  } catch (error) {
+    throw {
+      status: error?.status || 500,
+      message: `Error uploading new food data: ${error?.message}` || error,
+    }
+  }
+}
+
 const updateOneFoodItem = (foodItemId, changes) => {
   const query = { _id: new ObjectId(foodItemId) }
   if (!query._id) {
@@ -94,6 +109,7 @@ const deleteOneFoodItem = foodItemId => {
 export default {
   getAllFoodItems,
   createNewFoodItem,
+  createNewFoodItems,
   getOneFoodItem,
   updateOneFoodItem,
   deleteOneFoodItem,

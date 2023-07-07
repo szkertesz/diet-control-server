@@ -11,6 +11,8 @@ router.get('/:foodId', foodController.getOneFoodItem)
 
 router.post('/', foodController.createNewFoodItem)
 
+router.post('/seed', foodController.createNewFoodItems)
+
 router.patch('/:foodId', foodController.updateOneFoodItem)
 
 // router.delete('/:foodId', (req, res) => {
