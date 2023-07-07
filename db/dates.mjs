@@ -32,7 +32,6 @@ const getOneDate = dateId => {
 }
 
 const createNewDate = newDate => {
-  console.log(newDate)
   try {
     let result = dateCollection.insertOne(newDate)
     return result

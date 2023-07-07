@@ -28,7 +28,6 @@ const getOneFoodItem = async (req, res) => {
 
 const createNewFoodItem = async (req, res) => {
   const { body } = req
-  console.log(req)
   if (
     !body.name ||
     !body.energy ||
@@ -61,6 +60,22 @@ const createNewFoodItem = async (req, res) => {
     res
       .status(error?.status || 500)
       .send({ status: 'FAILED', data: { error: error?.message || error } })
+  }
+}
+
+const createNewFoodItems = async (req, res) => {
+  const { body } = req
+  console.log(body)
+  try {
+    const createdFoodItems = await foodService.createNewFoodItems(body)
+    res.status(201).send({ status: 'OK', data: createdFoodItems })
+  } catch (error) {
+    res.status(error?.status || 500).send({
+      status: 'FAILED',
+      data: {
+        error: `Bulk upload not succeeded: ${error?.message}` || error,
+      },
+    })
   }
 }
 
@@ -111,6 +126,7 @@ export default {
   getAllFoodItems,
   getOneFoodItem,
   createNewFoodItem,
+  createNewFoodItems,
   updateOneFoodItem,
   deleteOneFoodItem,
 }

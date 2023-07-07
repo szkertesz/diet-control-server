@@ -14,6 +14,56 @@ const getAllDates = async (req, res) => {
   }
 }
 
+async function getFoodItemInfo(foodItemId) {
+  const foodItemInfo = await foodCollection.findOne({ _id: foodItemId })
+  return foodItemInfo
+}
+
+// Function to transform the foodItems array
+async function transformFoodItems(foodItems) {
+  const transformedFoodItems = []
+
+  for (const foodItem of foodItems) {
+    const { _id, qty } = foodItem
+
+    // Query the additional food item info
+    const foodItemInfo = await getFoodItemInfo(_id)
+
+    // Create the transformed food item object with the additional info
+    const transformedFoodItem = {
+      _id,
+      qty,
+      ...foodItemInfo,
+    }
+
+    transformedFoodItems.push(transformedFoodItem)
+  }
+
+  return transformedFoodItems
+}
+
+// Function to transform the main document
+async function transformDocument(document) {
+  const transformedMeals = []
+
+  for (const meal of document.meals) {
+    const transformedFoodItems = await transformFoodItems(meal.foodItems)
+
+    const transformedMeal = {
+      ...meal,
+      foodItems: transformedFoodItems,
+    }
+    transformedMeals.push(transformedMeal)
+  }
+
+  const transformedDocument = {
+    ...document,
+    meals: transformedMeals,
+  }
+
+  return transformedDocument
+}
+
 const getOneDate = async (req, res) => {
   try {
     const {
@@ -21,11 +71,8 @@ const getOneDate = async (req, res) => {
     } = req
     if (!dateId) return
     const date = await datesService.getOneDate(dateId)
-    const foodItems = await foodCollection
-      .find({ _id: { $in: date.foodItems } })
-      .toArray()
-    date.foodItems = foodItems
-    res.send({ status: 'OK', data: date })
+    const transformedDate = await transformDocument(date)
+    res.send({ status: 'OK', data: transformedDate })
   } catch (error) {
     res
       .status(error?.status || 500)
@@ -46,12 +93,20 @@ const createNewDate = async (req, res) => {
     return
   }
 
+  const transformedMeals = body.meals.map(meal => ({
+    ...meal,
+    foodItems: meal.foodItems.map(foodItem => ({
+      ...foodItem,
+      _id: new ObjectId(foodItem._id),
+    })),
+  }))
+
   const newDate = {
     date: body.date,
-    meal: body.meal,
-    foodItems: body.foodItems.map(item => new ObjectId(item)),
-    stat: body.stat,
+    meals: transformedMeals,
+    sum: body.sum,
   }
+
   try {
     const createdDate = await datesService.createNewDate(newDate)
     res.status(201).send({ status: 'OK', data: createdDate })
