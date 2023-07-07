@@ -21,46 +21,27 @@ async function getFoodItemInfo(foodItemId) {
 
 // Function to transform the foodItems array
 async function transformFoodItems(foodItems) {
-  const transformedFoodItems = []
-
-  for (const foodItem of foodItems) {
-    const { _id, qty } = foodItem
-
-    // Query the additional food item info
-    const foodItemInfo = await getFoodItemInfo(_id)
-
-    // Create the transformed food item object with the additional info
-    const transformedFoodItem = {
-      _id,
-      qty,
-      ...foodItemInfo,
-    }
-
-    transformedFoodItems.push(transformedFoodItem)
-  }
+  const transformedFoodItems = await Promise.all(
+    foodItems.map(async foodItem => {
+      const { _id, qty } = foodItem
+      const foodItemInfo = await getFoodItemInfo(_id)
+      return { _id, qty, ...foodItemInfo }
+    })
+  )
 
   return transformedFoodItems
 }
 
 // Function to transform the main document
 async function transformDocument(document) {
-  const transformedMeals = []
+  const transformedMeals = await Promise.all(
+    document.meals.map(async meal => {
+      const transformedFoodItems = await transformFoodItems(meal.foodItems)
+      return { ...meal, foodItems: transformedFoodItems }
+    })
+  )
 
-  for (const meal of document.meals) {
-    const transformedFoodItems = await transformFoodItems(meal.foodItems)
-
-    const transformedMeal = {
-      ...meal,
-      foodItems: transformedFoodItems,
-    }
-    transformedMeals.push(transformedMeal)
-  }
-
-  const transformedDocument = {
-    ...document,
-    meals: transformedMeals,
-  }
-
+  const transformedDocument = { ...document, meals: transformedMeals }
   return transformedDocument
 }
 
