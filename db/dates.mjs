@@ -12,14 +12,14 @@ const getAllDates = () => {
   }
 }
 
-const getOneDate = dateId => {
+const getOneDate = isoDate => {
   try {
-    let query = { _id: new ObjectId(dateId) }
+    let query = { date: new Date(isoDate) }
     let result = dateCollection.findOne(query)
     if (!result) {
       throw {
         status: 400,
-        message: `Can't find date with the id '${dateId}'`,
+        message: `Can't find date with the ISO date '${isoDate}'`,
       }
     }
     return result
@@ -43,19 +43,17 @@ const createNewDate = newDate => {
   }
 }
 
-const updateOneDate = (dateId, changes) => {
-  const query = { _id: new ObjectId(dateId) }
-  if (!query._id) {
+const updateOneDate = (isoDate, changes) => {
+  const query = { date: isoDate }
+  if (!query.date) {
     throw {
       status: 400,
-      message: `Can't find date with the id '${dateId}'`,
+      message: `Can't find date with the ISO date '${isoDate}'`,
     }
   }
   const updates = {
     $set: {
-      date: changes.date,
-      meal: changes.meal,
-      foodItems: changes.foodItems,
+      meals: changes.meals,
       stat: changes.stat,
     },
   }
@@ -70,13 +68,13 @@ const updateOneDate = (dateId, changes) => {
   }
 }
 
-const deleteOneDate = dateId => {
+const deleteOneDate = isoDate => {
   try {
-    const query = { _id: new ObjectId(dateId) }
+    const query = { _id: new ObjectId(isoDate) }
     if (!query._id) {
       throw {
         status: 400,
-        message: `Can't find date with the id '${dateId}'`,
+        message: `Can't find date with the id '${isoDate}'`,
       }
     }
     let result = dateCollection.deleteOne(query)

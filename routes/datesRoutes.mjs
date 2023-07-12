@@ -7,15 +7,15 @@ const router = express.Router()
 // TODO: implement API cache (https://www.npmjs.com/package/apicache)
 router.get('/', datesController.getAllDates)
 
-router.get('/:dateId', datesController.getOneDate)
+router.get('/:isoDate', datesController.getOneDate)
 
 router.post('/', datesController.createNewDate)
 
-router.patch('/:dateId', datesController.updateOneDate)
+router.patch('/:isoDate', datesController.updateOneDate)
 
-// router.delete('/:dateId', (req, res) => {
+// router.delete('/:isoDate', (req, res) => {
 //   res.send('Delete an existing date')
 // })
-router.delete('/:dateId', datesController.deleteOneDate)
+router.delete('/:isoDate', datesController.deleteOneDate)
 
 export default router

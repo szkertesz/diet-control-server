@@ -9,9 +9,9 @@ const getAllDates = () => {
   }
 }
 
-const getOneDate = dateId => {
+const getOneDate = isoDate => {
   try {
-    const date = Dates.getOneDate(dateId)
+    const date = Dates.getOneDate(isoDate)
     return date
   } catch (error) {
     throw error
@@ -27,18 +27,18 @@ const createNewDate = dateData => {
   }
 }
 
-const updateOneDate = (dateId, dateDataChanges) => {
+const updateOneDate = (isoDate, dateDataChanges) => {
   try {
-    const updatedDate = Dates.updateOneDate(dateId, dateDataChanges)
+    const updatedDate = Dates.updateOneDate(isoDate, dateDataChanges)
     return updatedDate
   } catch (error) {
     throw error
   }
 }
 
-const deleteOneDate = dateId => {
+const deleteOneDate = isoDate => {
   try {
-    Dates.deleteOneDate(dateId)
+    Dates.deleteOneDate(isoDate)
   } catch (error) {
     throw error
   }

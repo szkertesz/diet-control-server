@@ -48,10 +48,10 @@ async function transformDocument(document) {
 const getOneDate = async (req, res) => {
   try {
     const {
-      params: { dateId },
+      params: { isoDate },
     } = req
-    if (!dateId) return
-    const date = await datesService.getOneDate(dateId)
+    if (!isoDate) return
+    const date = await datesService.getOneDate(isoDate)
     const transformedDate = await transformDocument(date)
     res.send({ status: 'OK', data: transformedDate })
   } catch (error) {
@@ -83,7 +83,7 @@ const createNewDate = async (req, res) => {
   }))
 
   const newDate = {
-    date: body.date,
+    date: new Date(body.date),
     meals: transformedMeals,
     sum: body.sum,
   }
@@ -100,18 +100,18 @@ const createNewDate = async (req, res) => {
 
 const updateOneDate = async (req, res) => {
   const {
+    params: { isoDate },
     body,
-    params: { dateId },
   } = req
-  if (!dateId) {
+  if (!isoDate) {
     res.status(400).send({
       status: 'FAILED',
-      data: { error: "Parameter ':dateId' can not be empty" },
+      data: { error: "Parameter ':isoDate' can not be empty" },
     })
     return
   }
   try {
-    const updatedDate = await datesService.updateOneDate(dateId, body)
+    const updatedDate = await datesService.updateOneDate(isoDate, body)
     res.send({ status: 'OK', data: updatedDate })
   } catch (error) {
     res
@@ -122,17 +122,17 @@ const updateOneDate = async (req, res) => {
 
 const deleteOneDate = (req, res) => {
   const {
-    params: { dateId },
+    params: { isoDate },
   } = req
-  if (!dateId) {
+  if (!isoDate) {
     res.status(400).send({
       status: 'FAILED',
-      data: { error: "Parameter ':dateId' can not be empty" },
+      data: { error: "Parameter ':date' can not be empty" },
     })
     return
   }
   try {
-    datesService.deleteOneDate(dateId)
+    datesService.deleteOneDate(isoDate)
     res.status(204).send({ status: 'OK' })
   } catch (error) {
     res
