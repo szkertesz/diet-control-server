@@ -7,6 +7,8 @@ const router = express.Router()
 // TODO: implement API cache (https://www.npmjs.com/package/apicache)
 router.get('/', datesController.getAllDates)
 
+router.get('/filled/:isoDate', datesController.getDatesOfMonth)
+
 router.get('/:isoDate', datesController.getOneDate)
 
 router.post('/', datesController.createNewDate)

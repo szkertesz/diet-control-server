@@ -14,6 +14,21 @@ const getAllDates = async (req, res) => {
   }
 }
 
+const getDatesOfMonth = async (req, res) => {
+  try {
+    const {
+      params: { isoDate },
+    } = req
+    if (!isoDate) return
+    const dates = await datesService.getDatesOfMonth(isoDate)
+    res.send({ status: 'OK', data: dates })
+  } catch (error) {
+    res
+      .status(error?.status || 500)
+      .send({ status: 'FAILED', data: { error: error?.message || error } })
+  }
+}
+
 async function getFoodItemInfo(foodItemId) {
   const foodItemInfo = await foodCollection.findOne({ _id: foodItemId })
   return foodItemInfo
@@ -143,6 +158,7 @@ const deleteOneDate = (req, res) => {
 
 export default {
   getAllDates,
+  getDatesOfMonth,
   getOneDate,
   createNewDate,
   updateOneDate,

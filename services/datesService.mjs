@@ -9,6 +9,15 @@ const getAllDates = () => {
   }
 }
 
+const getDatesOfMonth = isoDate => {
+  try {
+    const dates = Dates.getDatesOfMonth(isoDate)
+    return dates
+  } catch (error) {
+    throw error
+  }
+}
+
 const getOneDate = isoDate => {
   try {
     const date = Dates.getOneDate(isoDate)
@@ -46,6 +55,7 @@ const deleteOneDate = isoDate => {
 
 export default {
   getAllDates,
+  getDatesOfMonth,
   getOneDate,
   createNewDate,
   updateOneDate,

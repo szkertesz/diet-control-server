@@ -12,6 +12,30 @@ const getAllDates = () => {
   }
 }
 
+const getDatesOfMonth = isoDate => {
+  const date = new Date(isoDate)
+  // TODO: refactor date calculations
+  const year = date.getFullYear()
+  const month = date.getMonth()
+  const lastDayOfPrevMonth = new Date(Date.UTC(year, month, 1) - 1)
+  const firstDayOfNextMonth = new Date(Date.UTC(year, month + 1, 0) + 1)
+
+  try {
+    let results = dateCollection
+      .find({
+        // $and: [
+        //   { date: { $gt: new Date(startIsoDate), $lt: new Date(endIsoDate) } },
+        //   {'sum.energy' : {$gt: 0}},
+        // ],
+        date: { $gt: lastDayOfPrevMonth, $lt: firstDayOfNextMonth },
+      })
+      .toArray()
+    return results
+  } catch (error) {
+    throw { status: 500, message: error }
+  }
+}
+
 const getOneDate = isoDate => {
   try {
     let query = { date: new Date(isoDate) }
@@ -89,8 +113,9 @@ const deleteOneDate = isoDate => {
 
 export default {
   getAllDates,
-  createNewDate,
+  getDatesOfMonth,
   getOneDate,
+  createNewDate,
   updateOneDate,
   deleteOneDate,
 }
