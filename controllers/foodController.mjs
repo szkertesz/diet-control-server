@@ -34,7 +34,7 @@ const createNewFoodItem = async (req, res) => {
     !body.protein ||
     !body.fat ||
     !body.ch ||
-    !body.note
+    !body.notes
   ) {
     res.status(400).send({
       status: 'FAILED',
@@ -51,7 +51,7 @@ const createNewFoodItem = async (req, res) => {
     protein: body.protein,
     fat: body.fat,
     ch: body.ch,
-    note: body.note,
+    notes: body.notes,
   }
   try {
     const createdFoodItem = await foodService.createNewFoodItem(newFoodItem)
