@@ -65,7 +65,6 @@ const createNewFoodItem = async (req, res) => {
 
 const createNewFoodItems = async (req, res) => {
   const { body } = req
-  console.log(body)
   try {
     const createdFoodItems = await foodService.createNewFoodItems(body)
     res.status(201).send({ status: 'OK', data: createdFoodItems })
