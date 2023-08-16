@@ -73,7 +73,7 @@ const updateOneFoodItem = (foodItemId, changes) => {
       protein: changes.protein,
       fat: changes.fat,
       ch: changes.ch,
-      note: changes.note,
+      notes: changes.notes,
     },
   }
   try {
