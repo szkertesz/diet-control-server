@@ -67,8 +67,19 @@ const getOneDate = async (req, res) => {
     } = req
     if (!isoDate) return
     const date = await datesService.getOneDate(isoDate)
-    const transformedDate = await transformDocument(date)
-    res.send({ status: 'OK', data: transformedDate })
+    if (date === null) {
+      // res.status(404).send({
+      //   status: 'FAILED',
+      //   data: 'There is no data for this date in the database.',
+      // })
+      res.send({
+        status: 'OK',
+        data: null,
+      })
+    } else {
+      const transformedDate = await transformDocument(date)
+      res.send({ status: 'OK', data: transformedDate })
+    }
   } catch (error) {
     res
       .status(error?.status || 500)

@@ -49,7 +49,7 @@ const getOneDate = isoDate => {
     return result
   } catch (error) {
     throw {
-      status: error?.status || 500,
+      status: error?.status || 404,
       message: `Error getting date: ${error?.message}` || error,
     }
   }
