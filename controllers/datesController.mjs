@@ -1,7 +1,7 @@
-import { ObjectId } from 'mongodb'
+// import { ObjectId } from 'mongodb'
 import datesService from '../services/datesService.mjs'
 import db from '../db/connect.mjs'
-const foodCollection = db.collection('food')
+// const foodCollection = db.collection('food')
 
 const getAllDates = async (req, res) => {
   try {

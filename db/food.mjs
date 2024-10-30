@@ -1,7 +1,7 @@
 import db from '../db/connect.mjs'
-import { ObjectId } from 'mongodb'
+// import { ObjectId } from 'mongodb'
 
-const foodCollection = db.collection('food')
+// const foodCollection = db.collection('food')
 
 const getAllFoodItems = () => {
   try {
@@ -14,8 +14,7 @@ const getAllFoodItems = () => {
 
 const getOneFoodItem = foodItemId => {
   try {
-    let query = { _id: new ObjectId(foodItemId) }
-    let result = foodCollection.findOne(query)
+    let result = db.prepare('SELECT * FROM foodData WHERE id = ? ').get(foodItemId);
     if (!result) {
       throw {
         status: 400,
@@ -26,7 +25,7 @@ const getOneFoodItem = foodItemId => {
   } catch (error) {
     throw {
       status: error?.status || 500,
-      message: `Error getting date: ${error?.message}` || error,
+      message: `Error getting food item: ${error?.message}` || error,
     }
   }
 }

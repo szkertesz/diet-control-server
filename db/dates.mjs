@@ -1,7 +1,7 @@
 import db from '../db/connect.mjs'
-import { ObjectId } from 'mongodb'
+// import { ObjectId } from 'mongodb'
 
-const dateCollection = db.collection('dates')
+// const dateCollection = db.collection('dates')
 
 const getAllDates = () => {
   try {
