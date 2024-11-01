@@ -5,7 +5,7 @@ import db from '../db/connect.mjs'
 
 const getAllFoodItems = () => {
   try {
-    let results = foodCollection.find({}).toArray()
+    let results = db.prepare('SELECT * FROM foodData').all();
     return results
   } catch (error) {
     throw { status: 500, message: error }
@@ -32,12 +32,14 @@ const getOneFoodItem = foodItemId => {
 
 const createNewFoodItem = newFoodItemData => {
   try {
-    let result = foodCollection.insertOne(newFoodItemData)
+    const { name, energy_value, protein, fat, saturates, carbohydrate, sugar, fiber, salt, notes } = newFoodItemData;
+    const stmt = db.prepare('INSERT INTO foodData (name, energy_value, protein, fat, saturates, carbohydrate, sugar, fiber, salt, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    const result = stmt.run(name, energy_value, protein, fat, saturates, carbohydrate, sugar, fiber, salt, notes);
     return result
   } catch (error) {
     throw {
       status: error?.status || 500,
-      message: `Error creating new date: ${error?.message}` || error,
+      message: `Error creating new foodItem: ${error?.message}` || error,
     }
   }
 }

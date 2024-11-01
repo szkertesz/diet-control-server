@@ -33,24 +33,27 @@ const createNewFoodItem = async (req, res) => {
     !body.energy ||
     !body.protein ||
     !body.fat ||
-    !body.ch ||
-    !body.notes
+    !body.ch
   ) {
     res.status(400).send({
       status: 'FAILED',
       data: {
         error:
-          'One of the keys (name, energy, protein, fat, ch, note) is missing or is empty in request body',
+          'One of the keys (name, energy, protein, fat, ch) is missing or is empty in request body',
       },
     })
     return
   }
   const newFoodItem = {
     name: body.name,
-    energy: body.energy,
+    energy_value: body.energy,
     protein: body.protein,
     fat: body.fat,
-    ch: body.ch,
+    saturates: body.sats,
+    carbohydrate: body.ch,
+    sugar: body.sugar,
+    fiber: body.fiber,
+    salt: body.salt,
     notes: body.notes,
   }
   try {
