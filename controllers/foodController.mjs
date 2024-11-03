@@ -46,11 +46,11 @@ const createNewFoodItem = async (req, res) => {
   }
   const newFoodItem = {
     name: body.name,
-    energy_value: body.energy,
+    energy: body.energy,
     protein: body.protein,
     fat: body.fat,
-    saturates: body.sats,
-    carbohydrate: body.ch,
+    saturates: body.saturates,
+    ch: body.ch,
     sugar: body.sugar,
     fiber: body.fiber,
     salt: body.salt,

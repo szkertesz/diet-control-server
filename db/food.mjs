@@ -32,9 +32,9 @@ const getOneFoodItem = foodItemId => {
 
 const createNewFoodItem = newFoodItemData => {
   try {
-    const { name, energy_value, protein, fat, saturates, carbohydrate, sugar, fiber, salt, notes } = newFoodItemData;
-    const stmt = db.prepare('INSERT INTO foodData (name, energy_value, protein, fat, saturates, carbohydrate, sugar, fiber, salt, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    const result = stmt.run(name, energy_value, protein, fat, saturates, carbohydrate, sugar, fiber, salt, notes);
+    const { name, energy, protein, fat, saturates, ch, sugar, fiber, salt, notes } = newFoodItemData;
+    const stmt = db.prepare('INSERT INTO foodData (name, energy, protein, fat, saturates, ch, sugar, fiber, salt, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    const result = stmt.run(name, energy, protein, fat, saturates, ch, sugar, fiber, salt, notes);
     return result
   } catch (error) {
     throw {
@@ -60,25 +60,30 @@ const createNewFoodItems = newFoodData => {
 }
 
 const updateOneFoodItem = (foodItemId, changes) => {
-  const query = { _id: new ObjectId(foodItemId) }
-  if (!query._id) {
+  if (!foodItemId) {
     throw {
       status: 400,
       message: `Can't find food item with the id '${foodItemId}'`,
     }
   }
-  const updates = {
-    $set: {
-      name: changes.name,
-      energy: changes.energy,
-      protein: changes.protein,
-      fat: changes.fat,
-      ch: changes.ch,
-      notes: changes.notes,
-    },
-  }
+  const { name, energy, protein, fat, saturates, ch, sugar, fiber, salt, notes } = changes;
   try {
-    let result = foodCollection.updateOne(query, updates)
+    const stmt = db.prepare(`
+      UPDATE foodData
+      SET name = ?,
+          energy = ?,
+          protein = ?,
+          fat = ?,
+          saturates = ?,
+          ch = ?,
+          sugar = ?,
+          fiber = ?,
+          salt = ?,
+          notes = ?
+      WHERE
+          id = ?
+    `);
+    const result = stmt.run(name, energy, protein, fat, saturates, ch, sugar, fiber, salt, notes, foodItemId)
     return result
   } catch (error) {
     throw {
