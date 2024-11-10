@@ -95,14 +95,13 @@ const updateOneFoodItem = (foodItemId, changes) => {
 
 const deleteOneFoodItem = foodItemId => {
   try {
-    const query = { _id: new ObjectId(foodItemId) }
-    if (!query._id) {
+    if (!foodItemId) {
       throw {
         status: 400,
         message: `Can't find food item with the id '${foodItemId}'`,
       }
     }
-    let result = foodCollection.deleteOne(query)
+    const result = db.prepare('DELETE FROM foodData WHERE id = ?').run(foodItemId)
     return result
   } catch (error) {
     throw {
