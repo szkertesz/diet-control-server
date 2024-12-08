@@ -1,25 +1,43 @@
+import crypto from 'crypto';
 import Database from 'better-sqlite3-multiple-ciphers';
 import path from 'path'
+import dotenv from 'dotenv';
 
-const db = new Database(path.resolve('./db/nutrition.db'), {
-  fileMustExist: true,
-});
+// Load environment variables from .env
+dotenv.config();
+
+// Generate a 256-bit (32-byte) key for AES encryption
+// const secretKey = crypto.randomBytes(32);  // Creates a 32-byte buffer
+// console.log('Generated Secret Key (hex):', secretKey.toString('hex'));
+
+const secretKey = Buffer.from(process.env.DB_SECRET_KEY, 'hex');
+// console.log(secretKey)
+
+// const db = new Database(path.resolve('./db/nutrition.db'), {
+//   key: secretKey,
+//   cypher: 'sqleet',
+// });
+const db = new Database(path.resolve('./db/nutrition.db'));
+
+db.pragma(`key='${secretKey}'`);
+// db.pragma(`rekey='${secretKey}'`);
 db.pragma('journal_mode = WAL');
 
-// const connectionString = process.env.ATLAS_URI || ''
-// const client = new MongoClient(connectionString, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// })
-
-// let connection
-
 // try {
-//   connection = await client.connect()
-//   console.dir('connection established')
-// } catch (error) {
-//   console.error(error)
+//   // Read data from the encrypted database
+//   const rows = db.prepare('SELECT * FROM foodData').all();
+//   console.log('Decrypted Data:', rows[0]);
+// } catch(err) {
+//   console.error('Failed to decrypt database:', err.message);
 // }
 
-// let db = connection.db('diet_db')
+// Close the database
+// db.close();
+// Shutdown logic
+process.on('SIGINT', () => {
+  db.close();
+  console.log('Database connection closed.');
+  process.exit(0);
+});
+
 export default db
